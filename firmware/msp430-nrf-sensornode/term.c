@@ -22,10 +22,10 @@
  */
 #if TERM_ENABLE
 static inline void term_disable() {
-	while (!(IFG2 & UCA0TXIFG)) {
-	}
-	p_delay_ms(1);
-	spia_init();
+    while (!(IFG2 & UCA0TXIFG)) {
+    }
+    p_delay_ms(1);
+    spia_init();
 }
 #endif
 
@@ -35,25 +35,25 @@ static inline void term_disable() {
  */
 void term_init() {
 #if TERM_ENABLE
-	UCA0CTL1 |= UCSWRST;
-	UCA0CTL0 = 0;
-	UCA0CTL1 |= UCSSEL_2;
+    UCA0CTL1 |= UCSWRST;
+    UCA0CTL0 = 0;
+    UCA0CTL1 |= UCSSEL_2;
 
-	// 9600 Baud
+    // 9600 Baud
 #if P_CLOCK_FREQ_MHZ == 1
-	UCA0BR0 = 104;
-	UCA0BR1 = 0;
-	UCA0MCTL = (1 << 1);
+    UCA0BR0 = 104;
+    UCA0BR1 = 0;
+    UCA0MCTL = (1 << 1);
 #elif P_CLOCK_FREQ_MHZ == 8
-	UCA0BR0 = 65;
-	UCA0BR1 = 3;
-	UCA0MCTL = (2 << 1);
+    UCA0BR0 = 65;
+    UCA0BR1 = 3;
+    UCA0MCTL = (2 << 1);
 #else
 #error "Define UART baud rate control register values for selected clock frequency."
 #endif
 
-	UCA0CTL1 &= ~UCSWRST;
-	p_delay_ms(1);
+    UCA0CTL1 &= ~UCSWRST;
+    p_delay_ms(1);
 #endif
 }
 
@@ -64,9 +64,9 @@ void term_init() {
  */
 void term_putchar(char c) {
 #if TERM_ENABLE
-	while (!(IFG2 & UCA0TXIFG)) {
-	}
-	UCA0TXBUF = c;
+    while (!(IFG2 & UCA0TXIFG)) {
+    }
+    UCA0TXBUF = c;
 #endif
 }
 
@@ -77,12 +77,12 @@ void term_putchar(char c) {
  */
 void term_print(char *str) {
 #if TERM_ENABLE
-	while (*str != 0) {
-		while (!(IFG2 & UCA0TXIFG)) {
-		}
-		UCA0TXBUF = *str;
-		*str++;
-	}
+    while (*str != 0) {
+        while (!(IFG2 & UCA0TXIFG)) {
+        }
+        UCA0TXBUF = *str;
+        *str++;
+    }
 #endif
 }
 
@@ -92,8 +92,7 @@ void term_print(char *str) {
  */
 void term_log_begin() {
 #if TERM_ENABLE
-	term_init();
-    // term_print("\e[1m\e[32mL\e[0m ");
+    term_init();
 #endif
 }
 
@@ -103,9 +102,9 @@ void term_log_begin() {
  */
 void term_end() {
 #if TERM_ENABLE
-	term_putchar('\r');
-	term_putchar('\n');
-	term_disable();
+    term_putchar('\r');
+    term_putchar('\n');
+    term_disable();
 #endif
 }
 
@@ -116,9 +115,9 @@ void term_end() {
  */
 void term_log(char *str) {
 #if TERM_ENABLE
-	term_log_begin();
-	term_print(str);
-	term_end();
+    term_log_begin();
+    term_print(str);
+    term_end();
 #endif
 }
 
@@ -126,22 +125,51 @@ void term_log(char *str) {
  * Sending a unsigned number over uart. Function needs a static number of digits.
  * Number is always printed right-justified.
  *
- * @param number number to be sent.
- * @param digit_count number of digits
+ * @param number number to be sent, max. 32bit
+ * @param digit_count number of digits, max. 10
  */
-void term_uint(uint16_t number, uint8_t digit_count) {
+void term_uint(uint32_t number, uint8_t digit_count) {
 #if TERM_ENABLE
-	char str[6];
-	for (uint8_t i = 0; i < digit_count; i++) {
-		if (number == 0 && i != 0) {
-			str[digit_count - i - 1] = ' ';
-		} else {
-			str[digit_count - i - 1] = '0' + (number % 10);
-			number /= 10;
-		}
-	}
-	str[digit_count] = 0;
-	term_print(str);
+    term_decimal(number, digit_count, 0);
+#endif
+}
+
+/**
+ * Sending a fixed decimal number over UART.
+ *
+ * @param number number to be sent, max. 32bit
+ * @param digit_count number of digits, max. 10
+ * @param decimals position of decimal, 0 for no decimal
+ */
+void term_decimal(uint32_t number, uint8_t digit_count, uint8_t decimals) {
+#if TERM_ENABLE
+    char str[12];
+    int8_t str_pos = digit_count;
+
+    for (uint8_t i = 0; i < digit_count; i++) {
+        if (decimals == i) {
+            str[str_pos] = '.';
+            str_pos--;
+        }
+
+        if (number == 0 && i > decimals) {
+            str[str_pos] = ' ';
+        } else {
+            str[str_pos] = '0' + (number % 10);
+        }
+
+        number /= 10;
+        str_pos--;
+
+    }
+
+    if (decimals == 0) {
+        str[digit_count] = 0;
+    } else {
+        str[digit_count + 1] = 0;
+    }
+
+    term_print(str);
 #endif
 }
 
@@ -149,61 +177,80 @@ void term_uint(uint16_t number, uint8_t digit_count) {
  * Sending a signed number over uart. Function needs a static number of digits.
  * The sign is added as an extra character and is either space or minus.
  *
- * @param number number to be sent
- * @param digit_count number of digits
+ * @param number number to be sent, max. 32bit
+ * @param digit_count number of digits, max. 10
  */
-void term_int(int16_t number, uint8_t digit_count) {
+void term_int(int32_t number, uint8_t digit_count) {
 #if TERM_ENABLE
-	if (number < 0) {
-		term_putchar('-');
-		term_uint(-number, digit_count);
-	} else {
-		term_putchar(' ');
-		term_uint(number, digit_count);
-	}
+    if (number < 0) {
+        term_putchar('-');
+        term_decimal(-number, digit_count, 0);
+    } else {
+        term_putchar(' ');
+        term_decimal(number, digit_count, 0);
+    }
+#endif
+}
+
+/**
+ * Sending a signed fixed decimal number over UART.
+ *
+ * @param number number to be sent, max. 32bit
+ * @param digit_count number of digits, max. 10
+ * @param decimals position of decimal, 0 for no decimal
+ */
+void term_signed_decimal(int32_t number, uint8_t digit_count, uint8_t decimals) {
+#if TERM_ENABLE
+    if (number < 0) {
+        term_putchar('-');
+        term_decimal(-number, digit_count, decimals);
+    } else {
+        term_putchar(' ');
+        term_decimal(number, digit_count, decimals);
+    }
 #endif
 }
 
 /**
  * Sending a number in its binary form. Function needs a static number of digits.
  *
- * @param number number to be sent
- * @param digit_count number of binary digits
+ * @param number number to be sent, max. 16bit
+ * @param digit_count number of binary digits, max. 16
  */
 void term_binary(uint16_t number, uint8_t digit_count) {
 #if TERM_ENABLE
-	char str[17];
-	for (uint8_t i = 0; i < digit_count; i++) {
-		str[digit_count - i - 1] = '0' + (number & 1);
-		number >>= 1;
-	}
+    char str[17];
+    for (uint8_t i = 0; i < digit_count; i++) {
+        str[digit_count - i - 1] = '0' + (number & 1);
+        number >>= 1;
+    }
 
-	str[digit_count] = 0;
-	term_print(str);
+    str[digit_count] = 0;
+    term_print(str);
 #endif
 }
 
 /**
  * Sending a number in its hexadecimal form. Function needs a static number of digits.
  *
- * @param number number to be sent
- * @param digit_count number of hexadecimal digits
+ * @param number number to be sent, max. 32bit
+ * @param digit_count number of hexadecimal digits, max. 8
  */
-void term_hex(uint16_t number, uint8_t digit_count) {
+void term_hex(uint32_t number, uint8_t digit_count) {
 #if TERM_ENABLE
-	char str[9];
-	for (uint8_t i = 0; i < digit_count; i++) {
-		uint8_t digit = number & 0xf;
-		if (digit < 10) {
-			str[digit_count - i - 1] = '0' + digit;
-		} else {
-			str[digit_count - i - 1] = 'a' + digit - 10;
-		}
-		number >>= 4;
-	}
+    char str[9];
+    for (uint8_t i = 0; i < digit_count; i++) {
+        uint8_t digit = number & 0xf;
+        if (digit < 10) {
+            str[digit_count - i - 1] = '0' + digit;
+        } else {
+            str[digit_count - i - 1] = 'A' + digit - 10;
+        }
+        number >>= 4;
+    }
 
-	str[digit_count] = 0;
-	term_print(str);
+    str[digit_count] = 0;
+    term_print(str);
 #endif
 }
 
@@ -214,14 +261,17 @@ void term_hex(uint16_t number, uint8_t digit_count) {
  */
 void term_test_result(uint8_t result) {
 #if TERM_ENABLE
-	if (result) {
-		term_print("\e[1m\e[32mP\e[0m");
-	} else {
-		term_print("\e[1m\e[31mX\e[0m");
-	}
+    if (result) {
+        term_print("\e[1m\e[32mP\e[0m");
+    } else {
+        term_print("\e[1m\e[31mX\e[0m");
+    }
 #endif
 }
 
+/**
+ * Wait 1 sec on startup and send 10 new lines over UART
+ */
 void term_wait_and_clear() {
 #ifdef TERM_ENABLE
     p_delay_ms(1000);
