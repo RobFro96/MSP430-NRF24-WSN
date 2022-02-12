@@ -13,6 +13,7 @@
 // SENSORS
 #define INTERNAL_TEMPERATURE_ENABLE 1
 #define SI7021_ENABLE 1
+#define BMP180_ENABLE 1
 
 #define P_CLOCK_FREQ_MHZ 1  // DCO Calibration: frequency of MCLK/SMCLK
 
@@ -34,4 +35,6 @@
 #define SI7021_TIMINGS_LONG 0
 // 0: 12 ms RH, 11 ms T, 1: 16 ms RH, 50 ms T
 
+// BMP180
+#define BMP180_OSS (3) // Pressure measurement oversampling 0...3
 #endif /* CONFIG_H_ */

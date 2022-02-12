@@ -18,6 +18,7 @@
 #include "si7021.h"
 #include "test_si7021.h"
 #include "sensor.h"
+#include "test_bmp180.h"
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
@@ -36,6 +37,10 @@ int main(void) {
 #if SI7021_ENABLE
     test_si7021_i2c_detect();
     test_si7021_serial_number();
+#endif
+#if BMP180_ENABLE
+    test_bmp180_i2c_detect();
+    test_bmp180_get_cal_param();
 #endif
 #endif
 

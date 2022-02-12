@@ -10,6 +10,8 @@ typedef struct {
     uint16_t temperature_internal; // 04:05: 12-bit ADC reading of internal temperature N[11:0]
     uint16_t si7021_humidity; // 06:07: Si7021 relative humidity raw reading N
     uint16_t si7021_temperature; // 08:09: Si7021 temperature raw reading N
+    int16_t bmp180_temperature; // 0a:0b: BMP180 temperature reading in 0.1 degree Celsius
+    int32_t bmp180_pressure; // 0c:0f: BMP180 pressure reading in Pascal
 } out_regs_t;
 
 extern out_regs_t out_regs;

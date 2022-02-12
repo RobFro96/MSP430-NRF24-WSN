@@ -15,6 +15,7 @@
 #include "term.h"
 #include "sensor.h"
 #include "si7021.h"
+#include "bmp180.h"
 #include "data_collector.h"
 
 void data_collector() {
@@ -22,6 +23,7 @@ void data_collector() {
     data_collector_vbat();
     data_collector_temperature_internal();
     data_collector_si7021_data();
+    data_collector_bmp180_data();
 }
 
 void data_collector_rf_values() {
@@ -100,5 +102,41 @@ void data_collector_si7021_data() {
 #else
     out_regs.si7021_temperature = 0xffff;
     out_regs.si7021_humidity = 0xffff;
+#endif
+}
+
+void data_collector_bmp180_data() {
+#if BMP180_ENABLE
+    bmp_180_cal_param_t cal_param;
+    int32_t ut, up;
+    uint8_t err = bmp180_get_cal_param(&cal_param);
+    err |= bmp180_get_ut(&ut);
+    err |= bmp180_get_up(&up);
+    if (err) {
+        out_regs.bmp180_temperature = 0xffff;
+        out_regs.bmp180_pressure = 0xffffffff;
+        return;
+    }
+    out_regs.bmp180_temperature = bmp180_get_temperature(&cal_param, ut);
+    out_regs.bmp180_pressure = bmp180_get_pressure(&cal_param, ut, up);
+#if TERM_ENABLE
+    term_log_begin();
+    term_print("> out_regs.bmp180_temperature = 0x");
+    term_hex(out_regs.bmp180_temperature, 4);
+    term_print("  T=");
+    term_signed_decimal(out_regs.bmp180_temperature, 4, 1);
+    term_print("^C");
+    term_end();
+    term_log_begin();
+    term_print("> out_regs.bmp180_pressure = 0x");
+    term_hex(out_regs.bmp180_pressure, 8);
+    term_print("  p=");
+    term_decimal(out_regs.bmp180_pressure, 6, 2);
+    term_print("hPa");
+    term_end();
+#endif
+#else
+    out_regs.bmp180_temperature = 0xffff;
+    out_regs.bmp180_pressure = 0xffffffff;
 #endif
 }

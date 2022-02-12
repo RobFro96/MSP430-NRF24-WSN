@@ -13,6 +13,7 @@ void data_collector_rf_values();
 void data_collector_vbat();
 void data_collector_temperature_internal();
 void data_collector_si7021_data();
+void data_collector_bmp180_data();
 
 
 #endif /* DATA_COLLECTOR_H_ */
