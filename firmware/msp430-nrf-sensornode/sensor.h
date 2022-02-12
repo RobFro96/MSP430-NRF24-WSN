@@ -2,6 +2,8 @@
 #define SENSOR_H_
 
 #define SENSOR_BIT_ADC_VBAT_2_5V (0x8000)
+#define REED_L_VALUE (0x00)
+#define REED_H_VALUE (0xAA)
 
 typedef struct {
     uint8_t addr; // 00: device’s RF address A[7:0]
@@ -12,6 +14,7 @@ typedef struct {
     uint16_t si7021_temperature; // 08:09: Si7021 temperature raw reading N
     int16_t bmp180_temperature; // 0a:0b: BMP180 temperature reading in 0.1 degree Celsius
     int32_t bmp180_pressure; // 0c:0f: BMP180 pressure reading in Pascal
+    uint8_t reed; // 10: reed switch state: R[7:0]=0x00 (magnetic, L), R=0xAA (released, H)
 } out_regs_t;
 
 extern out_regs_t out_regs;

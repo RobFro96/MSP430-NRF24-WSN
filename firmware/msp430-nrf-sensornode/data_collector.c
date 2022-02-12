@@ -24,6 +24,7 @@ void data_collector() {
     data_collector_temperature_internal();
     data_collector_si7021_data();
     data_collector_bmp180_data();
+    data_collector_reed();
 }
 
 void data_collector_rf_values() {
@@ -138,5 +139,28 @@ void data_collector_bmp180_data() {
 #else
     out_regs.bmp180_temperature = 0xffff;
     out_regs.bmp180_pressure = 0xffffffff;
+#endif
+}
+
+void data_collector_reed() {
+#if REED_EN
+    p_reed_pullup();
+    p_delay_us(10);
+    if (p_reed_val()) {
+        // open, H
+        out_regs.reed = REED_H_VALUE;
+    } else {
+        // close, L
+        out_regs.reed = REED_L_VALUE;
+    }
+    p_reed_pulldown();
+#if TERM_ENABLE
+    term_log_begin();
+    term_print("> out_regs.reed = 0x");
+    term_hex(out_regs.reed, 2);
+    term_end();
+#endif
+#else
+    out_regs.reed = 0xff;
 #endif
 }

@@ -7,10 +7,10 @@ index	size	type	field	description	B15	B14	B13	B12	B11	B10	B9	B8	B7	B6	B5	B4	B3	B
 8	2.0	u	si7021_temperature	Si7021 temperature raw reading N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N
 10	2.0	s	bmp180_temperature	BMP180 temperature reading in 0.1 degree Celsius																
 12	4.0	s	bmp180_pressure	BMP180 pressure reading in Pascal																
-16																				
-16																				
-16																				
-16																				
-16																				
-16																				
-16																				
+16	1.0	u	reed	reed switch state: R[7:0]=0x00 (magnetic, L), R=0xAA (released, H)	R	R	R	R	R	R	R	R	R	R	R	R	R	R	R	R
+17																				
+17																				
+17																				
+17																				
+17																				
+17																				

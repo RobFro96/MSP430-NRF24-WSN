@@ -14,6 +14,7 @@
 #define INTERNAL_TEMPERATURE_ENABLE 1
 #define SI7021_ENABLE 1
 #define BMP180_ENABLE 1
+#define REED_EN 1
 
 #define P_CLOCK_FREQ_MHZ 1  // DCO Calibration: frequency of MCLK/SMCLK
 
