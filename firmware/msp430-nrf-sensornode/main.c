@@ -30,6 +30,9 @@ int main(void) {
     term_wait_and_clear();
 
     nrf24_init();
+    nrf24_set_addr(NRF24_RX_ADDR_P0, RF_ADDR_LSB);
+    nrf24_set_addr(NRF24_TX_ADDR, 0);
+
 
     // TESTS
 #if TERM_ENABLE

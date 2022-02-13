@@ -8,6 +8,10 @@
 #define CONFIG_H_
 
 #define TERM_ENABLE 1
+#define RF_ADDR_0 'R'
+#define RF_ADDR_1 'o'
+#define RF_ADDR_2 'F'
+#define RF_ADDR_3 'r'
 #define RF_ADDR_LSB 1
 
 // SENSORS
@@ -21,6 +25,7 @@
 #define SPIA_PRESCALER 1 // Prescaler of the SPIA: SPI frequency = SMCLK / prescaler
 #define SPIA_USE_FLAG_POLLING 0 // Use flag polling to delay the runtime [1] or use __delay_cycles() [0]
 
+#define NRF24_SPI 'A'
 #define NRF24_PAYLOAD_SIZE (32) // NRF24 fixed payload size
 
 // I2C Settings

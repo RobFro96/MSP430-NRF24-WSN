@@ -9,7 +9,6 @@
 #include <stdint.h>
 
 #include "pins.h"
-#include "spia.h"
 #include "nrf24.h"
 #include "term.h"
 #include "isr.h"
@@ -17,16 +16,16 @@
 
 void test_nrf24_registers() {
     term_log("\e[1mtest_nrf24_registers()\e[0m");
-    for (uint8_t reg = 0; reg < 7; reg++) {
-        uint8_t val = nrf24_read_register(reg);
+    for (uint8_t i = 0; i < nrf24_default_profile_count; i++) {
+        uint8_t val = nrf24_read_register(nrf24_default_profile[i].reg);
 
         term_log_begin();
         term_putchar('R');
-        term_putchar('0' + reg);
+        term_uint(nrf24_default_profile[i].reg + 100, 2);
         term_putchar('=');
         term_binary(val, 8);
         term_putchar(' ');
-        term_test_result(val == nrf24_default_profile[reg]);
+        term_test_result(val == nrf24_default_profile[i].val);
         term_end();
     }
 }
@@ -71,6 +70,8 @@ void test_nrf24_rx_loop() {
             uint8_t status = nrf24_read_status_and_clear();
             if (status & NRF24_RX_DR) {
                 nrf24_rx_download();
+
+                p_delay_ms(1);
 
                 // Send ACK
                 nrf24_enter_tx();
