@@ -43,4 +43,10 @@
 
 // BMP180
 #define BMP180_OSS (3) // Pressure measurement oversampling 0...3
+
+#define MAX_RETRIES (5)
+#define MIN_RETRIES (2)
+#define RX_INTERVAL (655)
+#define RETRY_DELAY (1638)
+
 #endif /* CONFIG_H_ */

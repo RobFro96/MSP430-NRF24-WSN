@@ -73,6 +73,7 @@ void data_collector_temperature_internal() {
     term_print("^C");
     term_end();
 #endif
+#else
     out_regs.temperature_internal = 0xFFFF;
 #endif
 }

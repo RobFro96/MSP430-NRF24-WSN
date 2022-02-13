@@ -82,11 +82,10 @@ void test_nrf24_rx_loop() {
 
                 p_led_h();
                 term_log_begin();
-                for (uint8_t i = 0; i < 16; i++) {
+                for (uint8_t i = 0; i < 32; i++) {
                     term_hex(nrf24_rx_data[i], 2);
                     term_putchar(' ');
                 }
-                term_print("...");
                 term_end();
                 p_led_l();
             }
