@@ -40,7 +40,8 @@ void test_nrf24_tx() {
 
     nrf24_enter_rx();
     uint8_t result_rx = nrf24_wait_on_finished(655);
-    nrf24_rx_download();
+    uint8_t data[NRF24_PAYLOAD_SIZE];
+    nrf24_rx_download(NRF24_PAYLOAD_SIZE, data);
 
     nrf24_enter_sleep();
 
@@ -52,7 +53,7 @@ void test_nrf24_tx() {
     if (result_rx) {
         term_print("  ");
         for (uint8_t i = 0; i < 16; i++) {
-            term_hex(nrf24_rx_data[i], 2);
+            term_hex(data[i], 2);
             term_putchar(' ');
         }
         term_print("...");
@@ -69,7 +70,8 @@ void test_nrf24_rx_loop() {
         if (isr_flag_isset_with_clear(ISR_NRF24_IRQ) || !p_nrf_irq_val()) {
             uint8_t status = nrf24_read_status_and_clear();
             if (status & NRF24_RX_DR) {
-                nrf24_rx_download();
+                uint8_t data[NRF24_PAYLOAD_SIZE];
+                nrf24_rx_download(NRF24_PAYLOAD_SIZE, data);
 
                 p_delay_ms(1);
 
@@ -83,7 +85,7 @@ void test_nrf24_rx_loop() {
                 p_led_h();
                 term_log_begin();
                 for (uint8_t i = 0; i < 32; i++) {
-                    term_hex(nrf24_rx_data[i], 2);
+                    term_hex(data[i], 2);
                     term_putchar(' ');
                 }
                 term_end();

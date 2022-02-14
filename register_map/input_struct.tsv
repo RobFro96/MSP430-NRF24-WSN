@@ -1,0 +1,16 @@
+index	size	type	field	description	B15	B14	B13	B12	B11	B10	B9	B8	B7	B6	B5	B4	B3	B2	B1	B0
+0	8.0	a	led_en	Bitwise array: enable LED on each node																
+8	1.0	u	testing	Id of sensor node in test mode																
+9	1.0	u	status_led	status LED state																
+10																				
+10																				
+10																				
+10																				
+10																				
+10																				
+10																				
+10																				
+10																				
+10																				
+10																				
+10																				

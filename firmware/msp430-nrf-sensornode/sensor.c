@@ -16,8 +16,10 @@
 #include "sensor.h"
 
 out_regs_t out_regs;
+in_regs_t in_regs;
 
 static uint8_t data_transmission();
+static void display_in_regs();
 
 void sensor_mainloop() {
     uint8_t allowed_retries = MAX_RETRIES;
@@ -51,6 +53,9 @@ void sensor_mainloop() {
             // success
             if (allowed_retries < MAX_RETRIES)
                 allowed_retries++;
+            p_led_h();
+            display_in_regs();
+            p_led_l();
         } else {
             // no communication
             if (allowed_retries > MIN_RETRIES)
@@ -75,6 +80,28 @@ static uint8_t data_transmission() {
     result = nrf24_wait_on_finished(RX_INTERVAL);
     if (!result)
         return 0;
-    nrf24_rx_download();
+
+    nrf24_rx_download(sizeof(in_regs), (uint8_t*) &in_regs);
     return 1;
+}
+
+static void display_in_regs() {
+    term_log_begin();
+    term_print("< in_regs.led_en = ");
+    for (uint8_t i = 0; i < sizeof(in_regs.led_en); i++) {
+        term_hex(in_regs.led_en[i], 2);
+        term_putchar(' ');
+    }
+    term_end();
+
+    term_log_begin();
+    term_print("< in_regs.testing = ");
+    term_hex(in_regs.testing, 2);
+    term_end();
+
+    term_log_begin();
+    term_print("< in_regs.status_led = ");
+    term_hex(in_regs.status_led, 2);
+    term_end();
+    
 }

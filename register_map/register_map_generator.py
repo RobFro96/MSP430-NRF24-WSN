@@ -44,8 +44,8 @@ def generate(excel_file, struct_name):
             else:
                 full_descr = "%02x:%02x: %s" % (ind, ind+size-1, descr)
 
-            if dtype == "c":
-                c_code.append("char %s[%d]; // %s" % (field, size, full_descr))
+            if dtype == "a":
+                c_code.append("uint8_t %s[%d]; // %s" % (field, size, full_descr))
             else:
                 int_type = C_INT_TYPES["%d:%s" % (size, dtype)]
                 c_code.append("%s %s; // %s" % (int_type, field, full_descr))
@@ -59,4 +59,11 @@ if __name__ == "__main__":
     generate(
         excel_file="output_struct.xlsx",
         struct_name="out_regs_t"
+    )
+
+    print("")
+
+    generate(
+        excel_file="input_struct.xlsx",
+        struct_name="in_regs_t"
     )

@@ -17,7 +17,14 @@ typedef struct {
     uint8_t reed; // 10: reed switch state: R[7:0]=0x00 (magnetic, L), R=0xAA (released, H)
 } out_regs_t;
 
+typedef struct {
+    uint8_t led_en[8]; // 00:07: Bitwise array: enable LED on each node
+    uint8_t testing; // 08: Id of sensor node in test mode
+    uint8_t status_led; // 09: status LED state
+} in_regs_t;
+
 extern out_regs_t out_regs;
+extern in_regs_t in_regs;
 
 void sensor_mainloop();
 void sensor_collect_data();

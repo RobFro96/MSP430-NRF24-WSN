@@ -114,7 +114,6 @@ typedef enum {
 
 extern const nrf24_reg_val_pair_t nrf24_default_profile[];
 extern const uint8_t nrf24_default_profile_count;
-extern uint8_t nrf24_rx_data[32];
 
 void nrf24_init();
 void nrf24_write_register_multibit(uint8_t addr, uint8_t len, const uint8_t *data);
@@ -128,7 +127,7 @@ void nrf24_enter_rx();
 void nrf24_enter_sleep();
 void nrf24_tx_data(uint8_t len, const uint8_t *data);
 uint8_t nrf24_wait_on_finished(uint16_t timeout);
-void nrf24_rx_download();
+void nrf24_rx_download(uint8_t len, uint8_t *data);
 void nrf24_set_addr(uint8_t reg, uint8_t lsb);
 
 inline uint8_t nrf24_read_status() {

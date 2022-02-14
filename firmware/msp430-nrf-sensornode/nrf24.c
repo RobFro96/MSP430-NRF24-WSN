@@ -23,7 +23,6 @@ NRF24_RF_SETUP, NRF24_RF_DR_LOW + 3 * NRF24_RF_PWR,
 NRF24_RX_PW_P0, NRF24_PAYLOAD_SIZE };
 const uint8_t nrf24_default_profile_count = 7;
 
-uint8_t nrf24_rx_data[32];
 nrf24_state_t current_state;
 
 void nrf24_init() {
@@ -197,12 +196,10 @@ uint8_t nrf24_wait_on_finished(uint16_t timeout) {
     }
 }
 
-void nrf24_rx_download() {
+void nrf24_rx_download(uint8_t len, uint8_t *data) {
     p_nrf_cs_l();
 
     nrf24_spi_send(NRF24_R_RX_PAYLOAD);
-    uint8_t len = NRF24_PAYLOAD_SIZE;
-    uint8_t *data = nrf24_rx_data;
     while (len > 0) {
         *data = nrf24_spi_transmit(NRF24_NOP);
         data++;
