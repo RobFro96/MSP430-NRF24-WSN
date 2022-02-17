@@ -29,7 +29,6 @@ void data_collector() {
 
 void data_collector_rf_values() {
     out_regs.addr = RF_ADDR_LSB;
-    out_regs.retries = 0;
 
 #if TERM_ENABLE
     term_log("");

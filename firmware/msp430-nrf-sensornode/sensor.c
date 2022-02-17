@@ -26,7 +26,8 @@ void sensor_mainloop() {
 
     while (1) {
         data_collector();
-        for (out_regs.retries = 0; out_regs.retries < allowed_retries; out_regs.retries++) {
+        uint8_t retries = 0;
+        for (retries = 0; retries < allowed_retries; retries++) {
             p_led_h();
             uint8_t result = data_transmission();
             p_led_l();
@@ -35,22 +36,24 @@ void sensor_mainloop() {
                 break;
             }
 
+            out_regs.retries++;
             isr_delay(RETRY_DELAY);
         }
 
 #if TERM_ENABLE
         term_log_begin();
         term_print("Communication ");
-        term_uint(out_regs.retries + 1, 2);
+        term_uint(retries + 1, 2);
         term_putchar('/');
         term_uint(allowed_retries, 2);
         term_print("  successful? ");
-        term_test_result(out_regs.retries < allowed_retries);
+        term_test_result(retries < allowed_retries);
         term_end();
 #endif
 
-        if (out_regs.retries < allowed_retries) {
+        if (retries < allowed_retries) {
             // success
+            out_regs.retries = 0;
             if (allowed_retries < MAX_RETRIES)
                 allowed_retries++;
             p_led_h();
