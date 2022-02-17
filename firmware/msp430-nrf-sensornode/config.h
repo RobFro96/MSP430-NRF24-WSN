@@ -21,6 +21,7 @@
 #define REED_EN 1
 
 #define P_CLOCK_FREQ_MHZ 1  // DCO Calibration: frequency of MCLK/SMCLK
+#define P_CLOCK_ACLK 10 // ACLK clock frequency in kHz
 
 #define SPIA_PRESCALER 1 // Prescaler of the SPIA: SPI frequency = SMCLK / prescaler
 #define SPIA_USE_FLAG_POLLING 0 // Use flag polling to delay the runtime [1] or use __delay_cycles() [0]
@@ -46,7 +47,7 @@
 
 #define MAX_RETRIES (5)
 #define MIN_RETRIES (2)
-#define RX_INTERVAL (655)
-#define RETRY_DELAY (1638)
+#define RX_INTERVAL (20) // ms
+#define RETRY_DELAY (100) // ms
 
 #endif /* CONFIG_H_ */

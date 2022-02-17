@@ -60,6 +60,18 @@ void isr_delay(uint16_t aclk_cycles) {
 	}
 }
 
+/**
+ * Wait a number of milliseconds, assuming P_CLOCK_ALCK is set correctly
+ * @param ms milliseconds
+ */
+void isr_delay_ms(uint16_t ms) {
+    isr_timeout(P_CLOCK_ACLK * ms);
+
+    while (!isr_flag_isset_with_clear(ISR_TIMER_DELAY)) {
+        __low_power_mode_3();
+    }
+}
+
 
 /**
  * Interrupt Port1

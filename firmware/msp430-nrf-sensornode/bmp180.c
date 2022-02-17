@@ -67,16 +67,16 @@ uint8_t bmp180_get_up(int32_t *up) {
 
     switch (BMP180_OSS) {
     case 0:
-        isr_delay(148); // 4.5 ms
+        isr_delay_ms(5); // 4.5 ms
         break;
     case 1:
-        isr_delay(246); // 7.5 ms
+        isr_delay_ms(8); // 7.5 ms
         break;
     case 2:
-        isr_delay(443); // 13.5 ms
+        isr_delay_ms(14); // 13.5 ms
         break;
     case 3:
-        isr_delay(836); // 25.5 ms
+        isr_delay_ms(26); // 25.5 ms
         break;
     default:
         break;

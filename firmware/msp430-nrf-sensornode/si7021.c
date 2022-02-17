@@ -40,9 +40,9 @@ uint8_t si7021_start_humidity() {
  */
 void si7021_temperature_delay() {
 #if SI7021_TIMINGS_LONG
-    isr_delay(2294); // 50 ms + 20 ms
+    isr_delay_ms(70); // 50 ms + 20 ms
 #else
-    isr_delay(1016); // 11 ms + 20 ms
+    isr_delay_ms(31); // 11 ms + 20 ms
 #endif
 }
 
@@ -52,9 +52,9 @@ void si7021_temperature_delay() {
  */
 void si7021_humidity_delay() {
 #if SI7021_TIMINGS_LONG
-    isr_delay(1180); // 16 ms + 20 ms
+    isr_delay_ms(36); // 16 ms + 20 ms
 #else
-    isr_delay(1049); // 12 ms + 20 ms
+    isr_delay_ms(32); // 12 ms + 20 ms
 #endif
 }
 

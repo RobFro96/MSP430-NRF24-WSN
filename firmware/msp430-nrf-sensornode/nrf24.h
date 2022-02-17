@@ -126,7 +126,7 @@ void nrf24_enter_tx();
 void nrf24_enter_rx();
 void nrf24_enter_sleep();
 void nrf24_tx_data(uint8_t len, const uint8_t *data);
-uint8_t nrf24_wait_on_finished(uint16_t timeout);
+uint8_t nrf24_wait_on_finished(uint16_t ms);
 void nrf24_rx_download(uint8_t len, uint8_t *data);
 void nrf24_set_addr(uint8_t reg, uint8_t lsb);
 

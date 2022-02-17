@@ -111,7 +111,7 @@ void nrf24_enter_tx() {
     nrf24_write_register(0, nrf24_default_profile[0].val | NRF24_PWR_UP);
     switch (current_state) {
     case NRF24_STATE_SLEEP:
-        isr_delay(50); // 1.5 ms
+        isr_delay_ms(2); // 1.5 ms
         break;
     case NRF24_STATE_TX:
         break;
@@ -128,7 +128,7 @@ void nrf24_enter_rx() {
     nrf24_write_register(0, nrf24_default_profile[0].val | NRF24_PWR_UP | NRF24_PRIM_RX);
     switch (current_state) {
     case NRF24_STATE_SLEEP:
-        isr_delay(50); // 1.5 ms
+        isr_delay_ms(2); // 1.5 ms
         break;
     case NRF24_STATE_TX:
         p_delay_us(130); // 130 µs
@@ -172,9 +172,9 @@ void nrf24_tx_data(uint8_t len, const uint8_t *data) {
     p_nrf_ce_l();
 }
 
-uint8_t nrf24_wait_on_finished(uint16_t timeout) {
-    if (timeout > 0) {
-        isr_timeout(timeout);
+uint8_t nrf24_wait_on_finished(uint16_t ms) {
+    if (ms > 0) {
+        isr_timeout(ms * P_CLOCK_ACLK);
     } else {
         isr_flags &= ~ISR_TIMER_DELAY;
     }

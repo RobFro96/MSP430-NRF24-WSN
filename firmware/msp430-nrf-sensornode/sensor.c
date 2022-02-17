@@ -37,7 +37,7 @@ void sensor_mainloop() {
             }
 
             out_regs.retries++;
-            isr_delay(RETRY_DELAY);
+            isr_delay_ms(RETRY_DELAY);
         }
 
 #if TERM_ENABLE
@@ -67,7 +67,7 @@ void sensor_mainloop() {
 
 
         for (uint8_t i = 0; i < 5; i++) {
-            isr_delay(0x8000);
+            isr_delay_ms(1000);
         }
     }
 }
@@ -75,7 +75,7 @@ void sensor_mainloop() {
 static uint8_t data_transmission() {
     nrf24_enter_tx();
     nrf24_tx_data(sizeof(out_regs_t), (uint8_t*) &out_regs);
-    uint8_t result = nrf24_wait_on_finished(655);
+    uint8_t result = nrf24_wait_on_finished(10);
     if (!result)
         return 0;
 

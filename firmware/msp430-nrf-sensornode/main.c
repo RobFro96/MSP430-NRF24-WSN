@@ -22,8 +22,9 @@
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-
     p_setup();
+    BCSCTL3 |= LFXT1S_2;
+
     spia_init();
     i2c_init();
     __enable_interrupt();

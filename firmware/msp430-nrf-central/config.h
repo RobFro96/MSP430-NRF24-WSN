@@ -14,6 +14,7 @@
 #define RF_ADDR_3 'r'
 
 #define P_CLOCK_FREQ_MHZ 8  // DCO Calibration: frequency of MCLK/SMCLK
+#define P_CLOCK_ACLK 32
 
 #define SPIB_PRESCALER 1 // Prescaler of the SPIA: SPI frequency = SMCLK / prescaler
 #define SPIB_USE_FLAG_POLLING 0 // Use flag polling to delay the runtime [1] or use __delay_cycles() [0]
