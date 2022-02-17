@@ -72,7 +72,7 @@ int main(void) {
 
                 p_led_h();
                 term_log_begin();
-                for (uint8_t i = 0; i < 32; i++) {
+                for (uint8_t i = 0; i < sizeof(out_regs); i++) {
                     term_hex(((uint8_t *) &out_regs)[i], 2);
                     term_putchar(' ');
                 }
