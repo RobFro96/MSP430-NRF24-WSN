@@ -3184,17 +3184,12 @@ Source: &lt;a href="http://www.silabs.com/Support%20Documents/TechnicalDocs/Si70
 <pinref part="U1" gate="G$1" pin="!RST!"/>
 <wire x1="30.48" y1="53.34" x2="20.32" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="R1" gate="G$1" pin="1"/>
-<wire x1="20.32" y1="53.34" x2="-12.7" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="20.32" y1="55.88" x2="20.32" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="20.32" y1="53.34" x2="-5.08" y2="53.34" width="0.1524" layer="91"/>
 <junction x="20.32" y="53.34"/>
-<pinref part="X1" gate="G$1" pin="4"/>
-</segment>
-</net>
-<net name="N$3" class="0">
-<segment>
-<pinref part="U1" gate="G$1" pin="TEST"/>
-<wire x1="30.48" y1="50.8" x2="-12.7" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="-5.08" y1="53.34" x2="-7.62" y2="50.8" width="0.1524" layer="91"/>
 <pinref part="X1" gate="G$1" pin="5"/>
+<wire x1="-7.62" y1="50.8" x2="-12.7" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="P_SCK" class="0">
@@ -3335,6 +3330,15 @@ Source: &lt;a href="http://www.silabs.com/Support%20Documents/TechnicalDocs/Si70
 <pinref part="D1" gate="G$1" pin="C"/>
 <pinref part="R2" gate="G$1" pin="1"/>
 <wire x1="111.76" y1="25.4" x2="106.68" y2="25.4" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$3" class="0">
+<segment>
+<pinref part="X1" gate="G$1" pin="4"/>
+<wire x1="-12.7" y1="53.34" x2="-7.62" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="-7.62" y1="53.34" x2="-5.08" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="TEST"/>
+<wire x1="-5.08" y1="50.8" x2="30.48" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
