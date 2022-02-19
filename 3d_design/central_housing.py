@@ -25,7 +25,7 @@ nrf_xs = 40.9
 nrf_ys = 15.3
 nrf_zs = 1
 
-housing_height = lp_zs + 9.7 + shield_zs + 9.7 + nrf_zs + 4
+housing_height = lp_zs + 9.7 + shield_zs + 9.7 + nrf_zs + 3
 
 
 def save_obj(obj, filename, header="$fs=0.1; $fa=0.1;"):
@@ -73,7 +73,7 @@ def create_launchpad():
 
     nrf = Cube([nrf_xs, nrf_ys, nrf_zs]).color(DGRAY)
 
-    rf_jack = Cube([6, 6, 9.5]).translate([33.2, 4.9, nrf_zs]).color(YELLOW)
+    rf_jack = Cube([6, 6, 2.5]).translate([33.2, 4.9, nrf_zs]).color(YELLOW)
     nrf += rf_jack
 
     shield += nrf.translate([6.2, 11.7, 9.7 + shield_zs])
@@ -81,6 +81,7 @@ def create_launchpad():
     return lp
 
 
+# HOUSING
 housing = create_housing([-1, lp_xs+1], [-1, lp_ys+1], 2,
                          [-7, housing_height], [-5.5, housing_height + 1])
 
@@ -90,9 +91,29 @@ for hole_x, hole_y in itertools.product(hole_xpos, hole_ypos):
     insert = insert.translate([hole_x, hole_y, -5.5])
     housing += insert
 
-lid = create_housing([-1, lp_xs+1], [-1, lp_ys+1], 2,
-                     [housing_height+1, housing_height+2+1], [0, 0])
+usb_hole = Cube([3, 11, 8]).translate([-3.5, 7.5 - (11-7.6)/2, lp_zs - (8-2.6)/2])
+housing -= usb_hole
 
-out = lid + housing + create_launchpad()
-out = housing
+rst_btn_hole = Cube([3, 11, 8]).translate([-3.5, lp_ys-7-7.1 - (11-7)/2, lp_zs - (8-2.6)/2])
+housing -= rst_btn_hole
+
+antenna_hole = Cylinder(d=6.5, h=3).rotate([0, 90, 0]).translate([lp_xs + .5, 10, 20])
+housing -= antenna_hole
+
+led_hole = Cylinder(d=5.2, h=3).rotate([0, 90, 0]).translate([lp_xs + .5, 45, 20])
+housing -= led_hole
+
+# LID
+lid = create_housing([-1, lp_xs+1], [-1, lp_ys+1], 2,
+                     [housing_height, housing_height+2], [0, 0])
+for hole_x, hole_y in itertools.product(hole_xpos, hole_ypos):
+    aligner = Cube([6, 6, 5]).translate([hole_x-3, hole_y-3, housing_height-5])
+    hole = Cylinder(d=3.2, h=7.2).translate([hole_x, hole_y, housing_height-5.1])
+    lid = lid + aligner - hole
+
+lid = lid.color(GRAY)
+
+cut = Cube([100, 8, 100]).translate([0, -5, 0])
+
+out = create_launchpad() + housing + lid
 save_obj(out, __file__[:-2] + "scad")
