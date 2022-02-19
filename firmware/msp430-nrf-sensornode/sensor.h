@@ -18,7 +18,7 @@ typedef struct {
 } out_regs_t;
 
 typedef struct {
-    uint8_t led_en[8]; // 00:07: Bitwise array: enable LED on each node
+    uint8_t led_dis[8]; // 00:07: Bitwise array: enable LED on each node
     uint8_t testing; // 08: Id of sensor node in test mode
     uint8_t status_led; // 09: status LED state
 } in_regs_t;

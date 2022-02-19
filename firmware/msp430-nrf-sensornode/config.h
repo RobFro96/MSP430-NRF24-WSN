@@ -7,7 +7,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define TERM_ENABLE 1
+#define TERM_ENABLE 0
 #define RF_ADDR_0 'R'
 #define RF_ADDR_1 'o'
 #define RF_ADDR_2 'F'
@@ -47,7 +47,10 @@
 
 #define MAX_RETRIES (5)
 #define MIN_RETRIES (2)
-#define RX_INTERVAL (20) // ms
+#define RX_INTERVAL (5) // ms
 #define RETRY_DELAY (100) // ms
+
+#define SLEEP_DEFAULT (5) // sec
+#define SLEEP_TESTING (60) // sec
 
 #endif /* CONFIG_H_ */

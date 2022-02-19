@@ -20,6 +20,7 @@ in_regs_t in_regs;
 
 static uint8_t data_transmission();
 static void display_in_regs();
+static uint8_t is_my_led_disabled();
 
 void sensor_mainloop() {
     uint8_t allowed_retries = MAX_RETRIES;
@@ -28,9 +29,7 @@ void sensor_mainloop() {
         data_collector();
         uint8_t retries = 0;
         for (retries = 0; retries < allowed_retries; retries++) {
-            p_led_h();
             uint8_t result = data_transmission();
-            p_led_l();
             nrf24_enter_sleep();
             if (result) {
                 break;
@@ -56,17 +55,24 @@ void sensor_mainloop() {
             out_regs.retries = 0;
             if (allowed_retries < MAX_RETRIES)
                 allowed_retries++;
-            p_led_h();
+
+            if (!is_my_led_disabled()) {
+                p_led_h();
+                isr_delay_ms(10);
+                p_led_l();
+            }
+
             display_in_regs();
-            p_led_l();
+
         } else {
             // no communication
             if (allowed_retries > MIN_RETRIES)
                 allowed_retries--;
         }
 
-
-        for (uint8_t i = 0; i < 5; i++) {
+        // Sleep
+        uint16_t sleep_duration = (in_regs.testing == RF_ADDR_LSB) ? SLEEP_TESTING : SLEEP_DEFAULT;
+        for (uint16_t i = 0; i < sleep_duration; i++) {
             isr_delay_ms(1000);
         }
     }
@@ -89,10 +95,11 @@ static uint8_t data_transmission() {
 }
 
 static void display_in_regs() {
+#if TERM_ENABLE
     term_log_begin();
     term_print("< in_regs.led_en = ");
-    for (uint8_t i = 0; i < sizeof(in_regs.led_en); i++) {
-        term_hex(in_regs.led_en[i], 2);
+    for (uint8_t i = 0; i < sizeof(in_regs.led_dis); i++) {
+        term_hex(in_regs.led_dis[i], 2);
         term_putchar(' ');
     }
     term_end();
@@ -106,5 +113,11 @@ static void display_in_regs() {
     term_print("< in_regs.status_led = ");
     term_hex(in_regs.status_led, 2);
     term_end();
-    
+#endif
+}
+
+static uint8_t is_my_led_disabled() {
+    uint8_t index = RF_ADDR_LSB << 3; // divide by 8
+    uint8_t bit = RF_ADDR_LSB & 7; // rest modulo 8
+    return in_regs.led_dis[index] & (1 << bit);
 }
