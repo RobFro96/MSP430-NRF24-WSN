@@ -7,18 +7,27 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define TERM_ENABLE 0
 #define RF_ADDR_0 'R'
 #define RF_ADDR_1 'o'
 #define RF_ADDR_2 'F'
 #define RF_ADDR_3 'r'
 #define RF_ADDR_LSB 1
 
-// SENSORS
+#if RF_ADDR_LSB == 1
+// [1] ,Weather Station
+#define TERM_ENABLE 0
+#define INTERNAL_TEMPERATURE_ENABLE 1
+#define SI7021_ENABLE 1
+#define BMP180_ENABLE 1
+#define REED_EN 0
+#else
+// Testing
+#define TERM_ENABLE 1
 #define INTERNAL_TEMPERATURE_ENABLE 1
 #define SI7021_ENABLE 1
 #define BMP180_ENABLE 1
 #define REED_EN 1
+#endif
 
 #define P_CLOCK_FREQ_MHZ 1  // DCO Calibration: frequency of MCLK/SMCLK
 #define P_CLOCK_ACLK 10 // ACLK clock frequency in kHz
@@ -50,7 +59,7 @@
 #define RX_INTERVAL (5) // ms
 #define RETRY_DELAY (100) // ms
 
-#define SLEEP_DEFAULT (5) // sec
-#define SLEEP_TESTING (60) // sec
+#define SLEEP_DEFAULT (60) // sec
+#define SLEEP_TESTING (1) // sec
 
 #endif /* CONFIG_H_ */
