@@ -11,3 +11,5 @@
 
 # Built Visual Studio Code Extensions
 *.vsix
+firmware/msp430-nrf-centralx/
+

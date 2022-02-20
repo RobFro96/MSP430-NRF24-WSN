@@ -10,10 +10,9 @@
 #include "config.h"
 #include "pins.h"
 #include "spib.h"
-#include "term.h"
 #include "nrf24.h"
-#include "test_nrf24.h"
 #include "isr.h"
+#include "uart.h"
 
 typedef struct {
     uint8_t addr; // 00: device’s RF address A[7:0]
@@ -37,24 +36,20 @@ typedef struct {
 out_regs_t out_regs;
 in_regs_t in_regs;
 
+void update_rgb_led();
+
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
     p_setup();
     spib_init();
+    uart_init();
     __enable_interrupt();
-    term_init();
-    term_wait_and_clear();
 
     in_regs.testing = 1;
 
     nrf24_init();
     nrf24_set_addr(NRF24_RX_ADDR_P0, 0);
-
-    // TESTS
-#if TERM_ENABLE
-    test_nrf24_registers();
-#endif
 
     nrf24_enter_rx();
     while (1) {
@@ -73,18 +68,43 @@ int main(void) {
 
                 nrf24_enter_rx();
 
-                p_led_h();
-                term_log_begin();
+                p_led_r_toggle();
+                uart_send(UART_START_BYTE);
+                uart_send(sizeof(out_regs));
                 for (uint8_t i = 0; i < sizeof(out_regs); i++) {
-                    term_hex(((uint8_t *) &out_regs)[i], 2);
-                    term_putchar(' ');
+                    uart_send(((uint8_t *) &out_regs)[i]);
                 }
-                term_end();
-                p_led_l();
+                p_led_r_toggle();
             }
             nrf24_flush();
+        } else if (isr_flag_isset_with_clear(ISR_UART_IRQ)) {
+            uint8_t len = uart_rx_buffer[UART_LEN];
+            for (uint8_t i = 0; i < len; i++) {
+                ((uint8_t *) &in_regs)[i] = uart_rx_buffer[UART_DATA + i];
+            }
+            update_rgb_led();
         } else {
             __low_power_mode_4();
         }
+    }
+}
+
+void update_rgb_led() {
+    if (in_regs.status_led & BIT0) {
+        p_led_r_h();
+    } else {
+        p_led_r_l();
+    }
+
+    if (in_regs.status_led & BIT1) {
+        p_led_g_h();
+    } else {
+        p_led_g_l();
+    }
+
+    if (in_regs.status_led & BIT2) {
+        p_led_b_h();
+    } else {
+        p_led_b_l();
     }
 }
