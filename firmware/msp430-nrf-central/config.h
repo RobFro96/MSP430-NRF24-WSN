@@ -7,6 +7,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+#define NRF24_CHANNEL (90)
 #define TERM_ENABLE 1
 #define RF_ADDR_0 'R'
 #define RF_ADDR_1 'o'

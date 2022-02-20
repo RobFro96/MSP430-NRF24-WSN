@@ -10,6 +10,7 @@
 
 #include "pins.h"
 #include "isr.h"
+#include "config.h"
 #include "nrf24.h"
 
 const nrf24_reg_val_pair_t nrf24_default_profile[] = {
@@ -18,7 +19,7 @@ NRF24_EN_AA, 0,
 NRF24_EN_RXADDR, NRF24_ERX_P0,
 NRF24_SETUP_AW, NRF24_AW * 3,
 NRF24_SETUP_RETR, 0,
-NRF24_RF_CH, 2,
+NRF24_RF_CH, NRF24_CHANNEL,
 NRF24_RF_SETUP, NRF24_RF_DR_LOW + 3 * NRF24_RF_PWR,
 NRF24_RX_PW_P0, NRF24_PAYLOAD_SIZE };
 const uint8_t nrf24_default_profile_count = 7;
