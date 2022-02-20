@@ -1,6 +1,6 @@
 import itertools
 
-from openpyscad import Cube, Cylinder, Empty, Hull
+from openpyscad import Cube, Cylinder, Empty
 
 RED = [1, 0, 0]
 YELLOW = [1, 1, 0]
