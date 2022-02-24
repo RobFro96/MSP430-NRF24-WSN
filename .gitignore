@@ -13,3 +13,4 @@
 *.vsix
 firmware/msp430-nrf-centralx/
 
+register_map/.~lock.input_struct.xlsx#

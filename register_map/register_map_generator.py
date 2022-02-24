@@ -19,6 +19,7 @@ C_TYPEDEF = """typedef struct {
 } %s;"""
 
 PY_LIST = """class %s:
+    SIZE = %d
     %s
 """
 SQL_TYPE_LIST = "%s = \"time INTEGER, %s\""
@@ -62,9 +63,10 @@ def generate(excel_file, struct_name, class_name, sql_type_list=None, sql_field_
             py_code.append("""%s = Register(%d, %d, "%s")""" % (field, ind, size, dtype))
             sql_code.append("""%s %s""" % (field, sql_type))
             field_list.append(field)
+        size += ind  # size of total struct
 
     print(C_TYPEDEF % ("\n    ".join(c_code), struct_name))
-    print(PY_LIST % (class_name, "\n    ".join(py_code)))
+    print(PY_LIST % (class_name, size, "\n    ".join(py_code)))
     if sql_type_list:
         print(SQL_TYPE_LIST % (sql_type_list, ", ".join(sql_code)))
     if sql_field_list:

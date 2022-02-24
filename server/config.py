@@ -9,6 +9,7 @@ class config:
     sql_table_types = "time INTEGER, addr INTEGER, retries INTEGER, vbat REAL, temperature_internal REAL, si7021_humidity REAL, si7021_temperature REAL, bmp180_temperature REAL, bmp180_pressure REAL, reed INTEGER"
     sql_table_fields = "time, addr, retries, vbat, temperature_internal, si7021_humidity, si7021_temperature, bmp180_temperature, bmp180_pressure, reed"
     barometric_height = 118
+    in_regs_update = dict(second="*/5")
 
 
 @dataclasses.dataclass
@@ -19,18 +20,19 @@ class Register:
 
     def from_struct(self, struct):
         segment = struct[self.index:self.index+self.size]
-        if self.dtype == "c":
+        if self.dtype == "a":
             return segment
         return int.from_bytes(segment, "little", signed=self.dtype == "s")
 
     def to_struct(self, struct, value: int):
-        if self.dtype != "c":
+        if self.dtype != "a":
             value = value.to_bytes(self.size, "little", signed=self.dtype == "s")
         for i, val in enumerate(value):
             struct[self.index+i] = val
 
 
 class OutRegisters:
+    SIZE = 17
     addr = Register(0, 1, "u")
     retries = Register(1, 1, "u")
     vbat = Register(2, 2, "u")
@@ -119,3 +121,20 @@ class OutRegisters:
         sql_list.append("NULL" if bmp180_pressure is None else str(bmp180_pressure))
         sql_list.append("NULL" if reed is None else str(reed))
         return sql_list
+
+
+class InRegisters:
+    SIZE = 10
+    led_dis = Register(0, 8, "a")
+    testing = Register(8, 1, "u")
+    status_led = Register(9, 1, "u")
+
+    @classmethod
+    def set_led_dis(cls, struct, node_table):
+        led_dis_array = [0]*cls.led_dis.size
+        for idx, _, led_dis in node_table:
+            if led_dis:
+                index = idx // 8
+                bit = idx % 8
+                led_dis_array[index] |= (1 << bit)
+        cls.led_dis.to_struct(struct, led_dis_array)

@@ -56,6 +56,7 @@ class Uart(threading.Thread):
         while not self.stop_event.wait(1):
             try:
                 self.connection = serial.Serial(self.port, self.baud, timeout=1)
+                logging.info("Serial port %s connected.", self.port)
                 while not self.stop_event.wait(1e-3):
                     n = max(0, min(self.connection.inWaiting(), 1024))  # Number of bytes to read
                     buffer = self.connection.read(n)  # Read bytes
@@ -71,11 +72,22 @@ class Uart(threading.Thread):
                             msg = bytearray()
                             payload_len = 0
             except serial.SerialException:
-                logging.info("Serial port %s disconnected." % self.port)
+                logging.info("Serial port %s disconnected.", self.port)
 
         # Close
         if self.connection and self.connection.is_open:
             self.connection.close()
+
+    def write(self, data):
+        if not self.connection or not self.connection.is_open:
+            return
+
+        if not isinstance(data, list):
+            data = bytearray(data)
+
+        data = bytearray([self.START_BYTE, len(data)]) + data
+        self.connection.write(data)
+        logging.debug("> %r", list(data))
 
 
 if __name__ == "__main__":
