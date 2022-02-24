@@ -1,16 +1,16 @@
-index	size	type	field	description	B15	B14	B13	B12	B11	B10	B9	B8	B7	B6	B5	B4	B3	B2	B1	B0
-0	1.0	u	addr	device’s RF address A[7:0]	-	-	-	-	-	-	-	-	A	A	A	A	A	A	A	A
-1	1.0	u	retries	count of current RF retries R[7:0]	-	-	-	-	-	-	-	-	R	R	R	R	R	R	R	R
-2	2.0	u	vbat	12-bit ADC reading of battery measurement N[11:0], reference R=0: 1.5 V, R=1: 2.5 V	R	-	-	-	N	N	N	N	N	N	N	N	N	N	N	N
-4	2.0	u	temperature_internal	12-bit ADC reading of internal temperature N[11:0]	-	-	-	-	N	N	N	N	N	N	N	N	N	N	N	N
-6	2.0	u	si7021_humidity	Si7021 relative humidity raw reading N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N
-8	2.0	u	si7021_temperature	Si7021 temperature raw reading N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N
-10	2.0	s	bmp180_temperature	BMP180 temperature reading in 0.1 degree Celsius																
-12	4.0	s	bmp180_pressure	BMP180 pressure reading in Pascal																
-16	1.0	u	reed	reed switch state: R[7:0]=0x00 (magnetic, L), R=0xAA (released, H)	R	R	R	R	R	R	R	R	R	R	R	R	R	R	R	R
-17																				
-17																				
-17																				
-17																				
-17																				
-17																				
+index	size	type	sql_type	field	description	B15	B14	B13	B12	B11	B10	B9	B8	B7	B6	B5	B4	B3	B2	B1	B0
+0	1.0	u	INTEGER	addr	device’s RF address A[7:0]	-	-	-	-	-	-	-	-	A	A	A	A	A	A	A	A
+1	1.0	u	INTEGER	retries	count of current RF retries R[7:0]	-	-	-	-	-	-	-	-	R	R	R	R	R	R	R	R
+2	2.0	u	REAL	vbat	12-bit ADC reading of battery measurement N[11:0], reference R=0: 1.5 V, R=1: 2.5 V	R	-	-	-	N	N	N	N	N	N	N	N	N	N	N	N
+4	2.0	u	REAL	temperature_internal	12-bit ADC reading of internal temperature N[11:0]	-	-	-	-	N	N	N	N	N	N	N	N	N	N	N	N
+6	2.0	u	REAL	si7021_humidity	Si7021 relative humidity raw reading N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N
+8	2.0	u	REAL	si7021_temperature	Si7021 temperature raw reading N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N	N
+10	2.0	s	REAL	bmp180_temperature	BMP180 temperature reading in 0.1 degree Celsius																
+12	4.0	s	REAL	bmp180_pressure	BMP180 pressure reading in Pascal																
+16	1.0	u	INTEGER	reed	reed switch state: R[7:0]=0x00 (magnetic, L), R=0xAA (released, H)	R	R	R	R	R	R	R	R	R	R	R	R	R	R	R	R
+17																					
+17																					
+17																					
+17																					
+17																					
+17																					
