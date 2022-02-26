@@ -5,7 +5,8 @@ import time
 import coloredlogs
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from config import InRegisters, OutRegisters, config
+from config import config
+from registers import InRegisters, OutRegisters
 from uart import Uart
 
 
@@ -44,9 +45,15 @@ class Main:
 
         InRegisters.set_led_dis(struct, node_table)
         InRegisters.testing.to_struct(struct, self.testing_sensor)
-        InRegisters.status_led.to_struct(struct, 0)
+        InRegisters.status_led.to_struct(struct, self.generate_led_output())
 
         self.uart.write(struct)
+
+    def generate_led_output(self):
+        for condition in config.led_conditions:
+            if condition.get_query_result(self.database):
+                return condition.led_color
+        return 0
 
 
 if __name__ == "__main__":
