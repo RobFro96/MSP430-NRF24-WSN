@@ -1,4 +1,13 @@
+import dataclasses
+
 from led_condition import LedColor, LedCondition, LedConditionType
+
+
+@dataclasses.dataclass
+class Node:
+    addr: int
+    name: str
+    led_dis: bool
 
 
 class config:
@@ -10,4 +19,7 @@ class config:
     in_regs_update = dict(second="*/5")
     led_conditions = [
         LedCondition(1, LedColor.BLUE, "bmp180_temperature < 23", 5*60, LedConditionType.ALL)
+    ]
+    nodes = [
+        Node(1, "Wetterstation", False)
     ]

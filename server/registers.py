@@ -2,6 +2,8 @@ import dataclasses
 import logging
 import typing
 
+from config import Node
+
 
 @dataclasses.dataclass
 class Register:
@@ -121,11 +123,11 @@ class InRegisters:
     status_led = Register(9, 1, "u")
 
     @classmethod
-    def set_led_dis(cls, struct, node_table):
+    def set_led_dis(cls, struct, nodes: typing.List[Node]):
         led_dis_array = [0]*cls.led_dis.size
-        for idx, _, led_dis in node_table:
-            if led_dis:
-                index = idx // 8
-                bit = idx % 8
+        for node in nodes:
+            if node.led_dis:
+                index = node.addr // 8
+                bit = node.addr % 8
                 led_dis_array[index] |= (1 << bit)
         cls.led_dis.to_struct(struct, led_dis_array)

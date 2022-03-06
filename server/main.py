@@ -22,7 +22,7 @@ class Main:
         self.uart.set_read_event(self.on_data_received)
 
         self.scheduler = BackgroundScheduler()
-        self.testing_sensor = 0
+        self.testing_sensor = 2
 
     def run(self):
         self.on_in_regs_update()
@@ -40,10 +40,9 @@ class Main:
 
     def on_in_regs_update(self):
         logging.debug("on_in_regs_update()")
-        node_table = self.database.execute("select * from node").fetchall()
         struct = bytearray([0]*InRegisters.SIZE)
 
-        InRegisters.set_led_dis(struct, node_table)
+        InRegisters.set_led_dis(struct, config.nodes)
         InRegisters.testing.to_struct(struct, self.testing_sensor)
         InRegisters.status_led.to_struct(struct, self.generate_led_output())
 
