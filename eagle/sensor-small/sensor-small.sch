@@ -2973,7 +2973,7 @@ Source: &lt;a href="http://www.silabs.com/Support%20Documents/TechnicalDocs/Si70
 <part name="M1" library="msp430-nrf-wsn-lib" deviceset="NRF24-MODULE" device=""/>
 <part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="V+" device=""/>
 <part name="GND4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R2" library="rfr-lib-passive" deviceset="R" device="0603" value="470k"/>
+<part name="R2" library="rfr-lib-passive" deviceset="R" device="0603" value="470"/>
 <part name="D1" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0805" package3d_urn="urn:adsk.eagle:package:15821/2"/>
 <part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U3" library="rfr-lib-sensors" deviceset="SI7021" device=""/>

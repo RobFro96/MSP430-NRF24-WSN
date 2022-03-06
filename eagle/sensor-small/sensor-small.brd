@@ -688,7 +688,7 @@ Source: &lt;a href="http://www.silabs.com/Support%20Documents/TechnicalDocs/Si70
 <attribute name="NAME" x="15" y="3" size="1" layer="25" ratio="12" rot="R270"/>
 <attribute name="VALUE" x="13.2" y="3.5" size="1" layer="27" ratio="12" rot="R90"/>
 </element>
-<element name="R2" library="rfr-lib-passive" package="R0603" value="470k" x="31" y="9.5" smashed="yes" rot="R270">
+<element name="R2" library="rfr-lib-passive" package="R0603" value="470" x="31" y="9.5" smashed="yes" rot="R270">
 <attribute name="NAME" x="30" y="9" size="1" layer="25" ratio="12" rot="R90"/>
 <attribute name="VALUE" x="32.8" y="11" size="1" layer="27" ratio="12" rot="R270"/>
 </element>
