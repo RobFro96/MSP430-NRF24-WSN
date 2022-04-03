@@ -46,7 +46,11 @@ int main(void) {
     uart_init();
     __enable_interrupt();
 
-    in_regs.testing = 1;
+    for (uint8_t i = 0; i < sizeof(in_regs.led_dis); i++) {
+        in_regs.led_dis[i] = 0;
+    }
+    in_regs.testing = 0;
+    in_regs.status_led = 0;
 
     nrf24_init();
     nrf24_set_addr(NRF24_RX_ADDR_P0, 0);

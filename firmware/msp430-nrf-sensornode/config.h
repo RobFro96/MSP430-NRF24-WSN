@@ -12,21 +12,35 @@
 #define RF_ADDR_1 'o'
 #define RF_ADDR_2 'F'
 #define RF_ADDR_3 'r'
-#define RF_ADDR_LSB 1
+#define RF_ADDR_LSB 3
 
 #if RF_ADDR_LSB == 1
-// [1] ,Weather Station
+// [1] Weather Station
 #define TERM_ENABLE 0
 #define INTERNAL_TEMPERATURE_ENABLE 1
 #define SI7021_ENABLE 1
 #define BMP180_ENABLE 1
+#define REED_EN 0
+#elif RF_ADDR_LSB == 2
+// [2] Bath Window
+#define TERM_ENABLE 0
+#define INTERNAL_TEMPERATURE_ENABLE 1
+#define SI7021_ENABLE 0
+#define BMP180_ENABLE 0
+#define REED_EN 1
+#elif RF_ADDR_LSB == 3
+// [3] Bath Heater
+#define TERM_ENABLE 0
+#define INTERNAL_TEMPERATURE_ENABLE 1
+#define SI7021_ENABLE 0
+#define BMP180_ENABLE 0
 #define REED_EN 0
 #else
 // Testing
 #define TERM_ENABLE 1
 #define INTERNAL_TEMPERATURE_ENABLE 1
 #define SI7021_ENABLE 1
-#define BMP180_ENABLE 1
+#define BMP180_ENABLE 0
 #define REED_EN 1
 #endif
 
@@ -49,7 +63,7 @@
 
 // Si7021 Settings
 // Two Timing configurations, _LONG=1 ensures compability with HTU21D
-#define SI7021_TIMINGS_LONG 0
+#define SI7021_TIMINGS_LONG 1
 // 0: 12 ms RH, 11 ms T, 1: 16 ms RH, 50 ms T
 
 // BMP180
