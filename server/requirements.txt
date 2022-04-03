@@ -1,2 +1,6 @@
 coloredlogs
 apscheduler
+pyserial
+flask
+werkzeug
+matplotlib

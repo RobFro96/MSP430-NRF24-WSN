@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import logging
 import sqlite3
 import time
@@ -8,6 +11,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from config import config
 from registers import InRegisters, OutRegisters
 from uart import Uart
+from web_server import WebServer
 
 
 class Main:
@@ -22,12 +26,15 @@ class Main:
         self.uart.set_read_event(self.on_data_received)
 
         self.scheduler = BackgroundScheduler()
-        self.testing_sensor = 2
+        self.testing_sensor = 0
+
+        self.web_server = WebServer(self.database)
 
     def run(self):
         self.on_in_regs_update()
         self.scheduler.add_job(self.on_in_regs_update, trigger="cron", **config.in_regs_update)
         self.scheduler.start()
+        self.web_server.start()
         self.uart.run()
 
     def on_data_received(self, message: bytearray):
