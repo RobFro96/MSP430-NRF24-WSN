@@ -70,7 +70,7 @@ void sensor_mainloop() {
         }
 
         // Sleep
-        uint16_t sleep_duration = (in_regs.testing == RF_ADDR_LSB) ? SLEEP_TESTING : SLEEP_DEFAULT;
+        uint16_t sleep_duration = (in_regs.testing == MY_ADDRESS) ? SLEEP_TESTING : SLEEP_DEFAULT;
         for (uint16_t i = 0; i < sleep_duration; i++) {
             isr_delay_ms(1000);
         }
@@ -78,14 +78,20 @@ void sensor_mainloop() {
 }
 
 static uint8_t data_transmission() {
+    const uint8_t control_mask[] = CONTROL_MASK;
+
     spirit_wakeup();
-    spirit_tx_set_addr(0x2F);
+    spirit_tx_set_ctrl(4, CONTROL_WORD);
+    spirit_tx_set_addr(0); // always transmit to central
+    spirit_rx_set_ctrl(4, control_mask, CONTROL_WORD);
+    spirit_rx_set_addr(MY_ADDRESS);
+
+
     spirit_tx_data(sizeof(out_regs_t), (uint8_t*) &out_regs);
     uint8_t result = spirit_tx_wait_on_finished(10);
     if (!result)
         return 0;
 
-    spirit_rx_set_addr(0x15);
     spirit_rx_start();
     result = spirit_rx_timeout(RX_INTERVAL);
     spirit_rx_stop();
@@ -94,15 +100,7 @@ static uint8_t data_transmission() {
     if (!result)
         return 0;
 
-    uint8_t size = sizeof(in_regs);
-    uint8_t *src = spirit_msg.data;
-    uint8_t *dest = (uint8_t*) &in_regs;
-    while (size > 0) {
-        *dest = *src;
-        dest++;
-        src++;
-        size--;
-    }
+    memcpy(&in_regs, spirit_msg.data, sizeof(in_regs));
 
     return 1;
 }
@@ -130,7 +128,7 @@ static void display_in_regs() {
 }
 
 static uint8_t is_my_led_disabled() {
-    uint8_t index = RF_ADDR_LSB << 3; // divide by 8
-    uint8_t bit = RF_ADDR_LSB & 7; // rest modulo 8
+    uint8_t index = MY_ADDRESS << 3; // divide by 8
+    uint8_t bit = MY_ADDRESS & 7; // rest modulo 8
     return in_regs.led_dis[index] & (1 << bit);
 }

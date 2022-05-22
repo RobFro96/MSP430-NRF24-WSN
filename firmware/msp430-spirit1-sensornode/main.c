@@ -53,11 +53,6 @@ int main(void) {
 #endif
 #endif
 
-#if RF_ADDR_LSB == 0
-    P2OUT |= BIT2;
-    test_spirit_rx_loop_ack();
-#else
     sensor_mainloop();
-#endif
 }
 

@@ -12,39 +12,9 @@
 
 #define CONTROL_WORD "RoFr"
 #define CONTROL_MASK {0xFF, 0xFF, 0xFF, 0xFF}
-#define MY_ADDRESS 4
+#define MY_ADDRESS 0
 
-#if MY_ADDRESS == 1
-// [1] Weather Station
-#define TERM_ENABLE 0
-#define INTERNAL_TEMPERATURE_ENABLE 1
-#define SI7021_ENABLE 1
-#define BMP180_ENABLE 1
-#define REED_EN 0
-#elif MY_ADDRESS == 2
-// [2] Bath Window
-#define TERM_ENABLE 0
-#define INTERNAL_TEMPERATURE_ENABLE 1
-#define SI7021_ENABLE 0
-#define BMP180_ENABLE 0
-#define REED_EN 1
-#elif MY_ADDRESS == 3
-// [3] Bath Heater
-#define TERM_ENABLE 0
-#define INTERNAL_TEMPERATURE_ENABLE 1
-#define SI7021_ENABLE 0
-#define BMP180_ENABLE 0
-#define REED_EN 0
-#else
-// Testing
-#define TERM_ENABLE 1
-#define INTERNAL_TEMPERATURE_ENABLE 1
-#define SI7021_ENABLE 1
-#define BMP180_ENABLE 0
-#define REED_EN 1
-#endif
-
-#define P_CLOCK_FREQ_MHZ 1  // DCO Calibration: frequency of MCLK/SMCLK
+#define P_CLOCK_FREQ_MHZ 8  // DCO Calibration: frequency of MCLK/SMCLK
 #define P_CLOCK_ACLK 10 // ACLK clock frequency in kHz
 
 #define SPIA_PRESCALER 1 // Prescaler of the SPIA: SPI frequency = SMCLK / prescaler
@@ -70,14 +40,14 @@
 
 #define MAX_RETRIES (5)
 #define MIN_RETRIES (2)
-#define RX_INTERVAL (20) // ms
+#define RX_INTERVAL (5) // ms
 #define RETRY_DELAY (100) // ms
 
 #define SLEEP_DEFAULT (60) // sec
 #define SLEEP_TESTING (1) // sec
 
 // SPIRIT1 Settings
-#define SPIRIT_SPI 'A' // 'A': SPIA, 'B': SPIB
+#define SPIRIT_SPI 'B' // 'A': SPIA, 'B': SPIB
 #define SPIRIT_ENTER_WDT_ENABLE 1 // 1: Use WDT inside the spirit_enter function, reset is generated if entering takes to long
 #define SPIRIT_ENTER_WDT_INTERVAL (WDTIS0) // WDTSSEL and WDTISx bits: WDTIS0 = SMCLK/8192 = 1024 µs @ 8 MHz
 #define SPIRIT_ULP_STATE (SPIRIT_STATE_STANDBY) // Default ULP state: SPIRIT_STATE_STANDBY or _SLEEP

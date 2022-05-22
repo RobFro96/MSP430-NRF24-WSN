@@ -28,7 +28,7 @@ void data_collector() {
 }
 
 void data_collector_rf_values() {
-    out_regs.addr = RF_ADDR_LSB;
+    out_regs.addr = MY_ADDRESS;
 
 #if TERM_ENABLE
     term_log("");
