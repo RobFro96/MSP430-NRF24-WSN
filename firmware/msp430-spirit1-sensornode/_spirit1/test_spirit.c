@@ -351,7 +351,7 @@ void test_spirit_print_msg_info() {
 void test_spirit_wrong_msg_btn() {
 	p_led_h();
 	term_log("\e[1mtest_spirit_wrong_msg_btn()\e[0m");
-	uint8_t crc_mode = p_btn_val() ? 1 : 0;
+    uint8_t crc_mode = 0; //p_btn_val() ? 1 : 0;
 	spirit_write_register(PCKTCTRL1_BASE, (crc_mode << 5) + (SPIRIT_PCK_WHIT_EN << 4));
 	spirit_tx_data(5, "Hello");
 	uint8_t result = spirit_tx_wait_on_finished(1638);

@@ -18,6 +18,7 @@
 #include "test_spirit.h"
 #include "si7021.h"
 #include "test_si7021.h"
+#include "sensor.h"
 
 int main(void) {
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
@@ -53,12 +54,10 @@ int main(void) {
 #endif
 
 #if RF_ADDR_LSB == 0
+    P2OUT |= BIT2;
     test_spirit_rx_loop_ack();
 #else
-    while (1) {
-        test_spirit_tx_rx_ack();
-        isr_delay_ms(1000);
-    }
+    sensor_mainloop();
 #endif
 }
 

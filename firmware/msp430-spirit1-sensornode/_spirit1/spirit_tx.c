@@ -118,12 +118,12 @@ void spirit_tx_custom_data_end() {
  * @param timeout duration of the isr_timeout() function
  * @return 1 if the message was sent successfully.
  */
-uint8_t spirit_tx_wait_on_finished(uint16_t timeout) {
+uint8_t spirit_tx_wait_on_finished(uint16_t ms) {
 	if (spirit_current_state != SPIRIT_STATE_TX)
 		return 0;
 
-	if (timeout > 0) {
-		isr_timeout(timeout);
+    if (ms > 0) {
+        isr_timeout(ms * P_CLOCK_ACLK);
 	} else {
 		isr_flags &= ~ISR_TIMER_DELAY;
 	}

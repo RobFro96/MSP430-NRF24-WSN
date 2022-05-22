@@ -12,6 +12,7 @@
 
 #include "isr.h"
 #include "spirit.h"
+#include "pins.h"
 #include "spirit_rx.h"
 
 spirit_msg_t spirit_msg;	//! last received message by calling spirit_rx()
@@ -67,9 +68,9 @@ void spirit_rx_download_info() {
  * @param timeout duration of the isr_timeout() function
  * @return length of the received message or 0
  */
-uint8_t spirit_rx_timeout(uint16_t timeout) {
-	if (timeout > 0) {
-		isr_timeout(timeout);
+uint8_t spirit_rx_timeout(uint16_t ms) {
+    if (ms > 0) {
+        isr_timeout(ms * P_CLOCK_ACLK);
 	} else {
 		isr_flags &= ~ISR_TIMER_DELAY;
 	}
