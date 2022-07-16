@@ -25,6 +25,7 @@ typedef struct {
     int16_t bmp180_temperature; // 0a:0b: BMP180 temperature reading in 0.1 degree Celsius
     int32_t bmp180_pressure; // 0c:0f: BMP180 pressure reading in Pascal
     uint8_t reed; // 10: reed switch state: R[7:0]=0x00 (magnetic, L), R=0xAA (released, H)
+    uint8_t rssi; // 11: RSSI reading for receiver
 } out_regs_t;
 
 typedef struct {
@@ -76,6 +77,7 @@ int main(void) {
                 spirit_rx_stop();
 
                 memcpy(&out_regs, spirit_msg.data, sizeof(out_regs));
+                out_regs.rssi = spirit_msg_info.rssi;
 
                 // Send ACK
                 spirit_tx_set_addr(out_regs.addr);

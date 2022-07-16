@@ -25,7 +25,7 @@ class Register:
 
 
 class OutRegisters:
-    SIZE = 17
+    SIZE = 18
     addr = Register(0, 1, "u")
     retries = Register(1, 1, "u")
     vbat = Register(2, 2, "u")
@@ -35,6 +35,7 @@ class OutRegisters:
     bmp180_temperature = Register(10, 2, "s")
     bmp180_pressure = Register(12, 4, "s")
     reed = Register(16, 1, "u")
+    rssi = Register(17, 1, "u")
 
     @classmethod
     def convert_vbat(cls, struct):
@@ -90,6 +91,11 @@ class OutRegisters:
         return val == 0xaa
 
     @classmethod
+    def convert_rssi(cls, struct):
+        val = cls.rssi.from_struct(struct)
+        return val / 2 - 130
+
+    @classmethod
     def convert_to_sql_list(cls, struct) -> typing.List[str]:
         logging.debug(list(struct))
         addr = OutRegisters.addr.from_struct(struct)
@@ -101,6 +107,7 @@ class OutRegisters:
         bmp180_temperature = OutRegisters.convert_bmp180_temperature(struct)
         bmp180_pressure = OutRegisters.convert_bmp180_pressure(struct)
         reed = OutRegisters.convert_reed(struct)
+        rssi = OutRegisters.convert_rssi(struct)
         logging.debug({k: v for k, v in locals().items() if k not in ["cls", "struct"]})
 
         sql_list = []
@@ -113,6 +120,7 @@ class OutRegisters:
         sql_list.append("NULL" if bmp180_temperature is None else str(bmp180_temperature))
         sql_list.append("NULL" if bmp180_pressure is None else str(bmp180_pressure))
         sql_list.append("NULL" if reed is None else str(reed))
+        sql_list.append(str(rssi))
         return sql_list
 
 

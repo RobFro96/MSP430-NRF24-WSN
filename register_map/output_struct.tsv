@@ -8,9 +8,9 @@ index	size	type	sql_type	field	description	B15	B14	B13	B12	B11	B10	B9	B8	B7	B6	B
 10	2.0	s	REAL	bmp180_temperature	BMP180 temperature reading in 0.1 degree Celsius																
 12	4.0	s	REAL	bmp180_pressure	BMP180 pressure reading in Pascal																
 16	1.0	u	INTEGER	reed	reed switch state: R[7:0]=0x00 (magnetic, L), R=0xAA (released, H)	R	R	R	R	R	R	R	R	R	R	R	R	R	R	R	R
-17																					
-17																					
-17																					
-17																					
-17																					
-17																					
+17	1.0	u	REAL	rssi	RSSI reading for receiver																
+18																					
+18																					
+18																					
+18																					
+18																					
