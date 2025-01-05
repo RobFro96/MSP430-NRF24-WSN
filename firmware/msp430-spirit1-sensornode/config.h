@@ -12,36 +12,26 @@
 
 #define CONTROL_WORD "RoFr"
 #define CONTROL_MASK {0xFF, 0xFF, 0xFF, 0xFF}
-#define MY_ADDRESS 4
+#define MY_ADDRESS 1
 
 #if MY_ADDRESS == 1
-// [1] Weather Station
-#define TERM_ENABLE 0
-#define INTERNAL_TEMPERATURE_ENABLE 1
-#define SI7021_ENABLE 1
-#define BMP180_ENABLE 1
-#define REED_EN 0
-#elif MY_ADDRESS == 2
-// [2] Bath Window
-#define TERM_ENABLE 0
-#define INTERNAL_TEMPERATURE_ENABLE 1
-#define SI7021_ENABLE 0
-#define BMP180_ENABLE 0
-#define REED_EN 1
-#elif MY_ADDRESS == 3
-// [3] Bath Heater
-#define TERM_ENABLE 0
-#define INTERNAL_TEMPERATURE_ENABLE 1
-#define SI7021_ENABLE 0
-#define BMP180_ENABLE 0
-#define REED_EN 0
-#else
-// Testing
+// [1] Testing
 #define TERM_ENABLE 1
-#define INTERNAL_TEMPERATURE_ENABLE 1
-#define SI7021_ENABLE 1
-#define BMP180_ENABLE 0
-#define REED_EN 1
+#define INTERNAL_TEMPERATURE_INDEX 0 // 3
+#define SI7021_INDEX 3 // 3+4
+#define DIGITAL_IN_INDEX 5 // 5
+#define SLEEP_DEFAULT (60) // secs
+#define OUT_PAYLOAD_LEN (6) // number of words
+
+#elif MY_ADDRESS == 2
+// [2] Weather Station
+#define TERM_ENABLE 0
+#define INTERNAL_TEMPERATURE_INDEX 0 // 3
+#define SI7021_INDEX 3 // 3+4
+#define DIGITAL_IN_INDEX 5 // 5
+#define SLEEP_DEFAULT (120) // sec
+#define OUT_PAYLOAD_LEN (5) // Number of words
+
 #endif
 
 #define P_CLOCK_FREQ_MHZ 1  // DCO Calibration: frequency of MCLK/SMCLK
@@ -73,7 +63,6 @@
 #define RX_INTERVAL (20) // ms
 #define RETRY_DELAY (100) // ms
 
-#define SLEEP_DEFAULT (60) // sec
 #define SLEEP_TESTING (1) // sec
 
 // SPIRIT1 Settings
@@ -86,9 +75,9 @@
 // SPIRIT1 Package Settings
 #define SPIRIT_PCK_CHNUM 0 // 0...255: Channel Number
 #define SPIRIT_PCK_CRC_MODE 1 // 0: No CRC, 1: 0x07, 2: 0x8005, 3: 0x1021, 4: 0x864CBF
-#define SPIRIT_PCK_WHIT_EN 0 // 1: Enable Data Whitening
+#define SPIRIT_PCK_WHIT_EN 1 // 1: Enable Data Whitening
 #define SPIRIT_PCK_SYNC_LEN 3 // 0...3: -> 1...4 Sync Bytes
-#define SPIRIT_PCK_PREAMBLE_LEN 7 // 0...31 -> 1...32 Preamble Length
+#define SPIRIT_PCK_PREAMBLE_LEN 3 // 0...31 -> 1...32 Preamble Length
 #define SPIRIT_PCK_ADDR_LEN 1 // 1: Send Receiver Address
 #define SPIRIT_PCK_CTRL_LEN 4 // 0...4: Control Bytes
 #define SPIRIT_PCK_SYNC1 0x88 // Sync Bytes

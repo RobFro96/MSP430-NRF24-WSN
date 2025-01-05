@@ -15,152 +15,105 @@
 #include "term.h"
 #include "sensor.h"
 #include "si7021.h"
-#include "bmp180.h"
 #include "data_collector.h"
 
 void data_collector() {
+    for (uint8_t i = 0; i < OUT_PAYLOAD_LEN; i++) {
+        out_regs[i] = 0;
+    }
+
     data_collector_rf_values();
     data_collector_vbat();
     data_collector_temperature_internal();
     data_collector_si7021_data();
-    data_collector_bmp180_data();
-    data_collector_reed();
+    data_collector_digital_in();
 }
 
 void data_collector_rf_values() {
-    out_regs.addr = MY_ADDRESS;
+    out_regs[OUT_REGS_ADDR_INDEX] = MY_ADDRESS;
 
 #if TERM_ENABLE
     term_log("");
     term_log_begin();
-    term_print("> out_regs.addr = 0x");
-    term_hex(out_regs.addr, 2);
+    term_print("> out_regs[0] = ");
+    term_int(out_regs[OUT_REGS_ADDR_INDEX], 3);
     term_end();
 #endif
 }
 
 void data_collector_vbat() {
-    out_regs.vbat = adc_measure_vbat(ADC_REF1_5V);
-    if (out_regs.vbat > 990) { // > 2.9 V
-        out_regs.vbat = adc_measure_vbat(ADC_REF2_5V) + SENSOR_BIT_ADC_VBAT_2_5V;
+    int16_t vbat = adc_measure_vbat(ADC_REF1_5V);
+    if (vbat > 990) { // > 2.9 V
+        vbat = adc_measure_vbat(ADC_REF2_5V);
+        out_regs[OUT_REGS_VBAT_INDEX] = vbat * 2 * 2500.0f / 1023.0f;
+    } else {
+        out_regs[OUT_REGS_VBAT_INDEX] = vbat * 2 * 1500.0f / 1023.0f;
     }
 
 #if TERM_ENABLE
     term_log_begin();
-    term_print("> out_regs.vbat = 0x");
-    term_hex(out_regs.vbat, 4);
-    term_print("  Vbat=");
-    if (out_regs.vbat & SENSOR_BIT_ADC_VBAT_2_5V) {
-        term_decimal(out_regs.vbat * 2 * 2500.0f / 1023.0f, 4, 3);
-    } else {
-        term_decimal(out_regs.vbat * 2 * 1500.0f / 1023.0f, 4, 3);
-    }
-    term_putchar('V');
+    term_print("> out_regs[2] = ");
+    term_int(out_regs[OUT_REGS_VBAT_INDEX], 5);
     term_end();
 #endif
 }
 
 void data_collector_temperature_internal() {
-#if INTERNAL_TEMPERATURE_ENABLE
-    out_regs.temperature_internal = adc_measure_temperature();
+#if INTERNAL_TEMPERATURE_INDEX
+    int16_t temp = adc_measure_temperature();
+    out_regs[INTERNAL_TEMPERATURE_INDEX] = temp * 150.0f / 1023.0f / 0.00355f - (98.6f / 0.00355f);
 #if TERM_ENABLE
     term_log_begin();
-    term_print("> out_regs.temperature_internal = 0x");
-    term_hex(out_regs.temperature_internal, 4);
-    term_print("  Temp=");
-    term_signed_decimal(out_regs.temperature_internal * 1500.0f / 1023.0f / 0.00355f - (986.0f / 0.00355f), 5, 3);
-    term_print("^C");
+    term_print("> out_regs.temperature (internal) = ");
+    term_int(out_regs[INTERNAL_TEMPERATURE_INDEX], 5);
     term_end();
 #endif
-#else
-    out_regs.temperature_internal = 0xFFFF;
 #endif
 }
 
 void data_collector_si7021_data() {
-#if SI7021_ENABLE
-    uint8_t err = si7021_measurement(&out_regs.si7021_temperature, &out_regs.si7021_humidity);
-    if (err) {
-        out_regs.si7021_temperature = 0xffff;
-        out_regs.si7021_humidity = 0xffff;
-    }
-#if TERM_ENABLE
-    term_log_begin();
-    term_print("> out_regs.si7021_humidity = 0x");
-    term_hex(out_regs.si7021_humidity, 4);
-    term_print("  RH=");
-    term_decimal(si7021_convert_humidity_2decimals(out_regs.si7021_humidity), 5, 2);
-    term_print("%");
-    term_end();
-    term_log_begin();
-    term_print("> out_regs.si7021_temperature = 0x");
-    term_hex(out_regs.si7021_temperature, 4);
-    term_print("  T=");
-    term_signed_decimal(si7021_convert_temperature_2decimals(out_regs.si7021_temperature), 5, 2);
-    term_print("^C");
-    term_end();
-#endif
-#else
-    out_regs.si7021_temperature = 0xffff;
-    out_regs.si7021_humidity = 0xffff;
-#endif
-}
+#if SI7021_INDEX
+    uint16_t temp;
+    uint16_t hum;
+    uint8_t err = si7021_measurement(&temp, &hum);
 
-void data_collector_bmp180_data() {
-#if BMP180_ENABLE
-    bmp_180_cal_param_t cal_param;
-    int32_t ut, up;
-    uint8_t err = bmp180_get_cal_param(&cal_param);
-    err |= bmp180_get_ut(&ut);
-    err |= bmp180_get_up(&up);
-    if (err) {
-        out_regs.bmp180_temperature = 0xffff;
-        out_regs.bmp180_pressure = 0xffffffff;
+    if (err)
         return;
-    }
-    out_regs.bmp180_temperature = bmp180_get_temperature(&cal_param, ut);
-    out_regs.bmp180_pressure = bmp180_get_pressure(&cal_param, ut, up);
+
+    out_regs[SI7021_INDEX] = si7021_convert_temperature_2decimals(temp);
+    out_regs[SI7021_INDEX + 1] = si7021_convert_humidity_2decimals(hum);
+
 #if TERM_ENABLE
     term_log_begin();
-    term_print("> out_regs.bmp180_temperature = 0x");
-    term_hex(out_regs.bmp180_temperature, 4);
-    term_print("  T=");
-    term_signed_decimal(out_regs.bmp180_temperature, 4, 1);
-    term_print("^C");
+    term_print("> out_regs.temperature (Si7021) = ");
+    term_int(out_regs[SI7021_INDEX], 5);
     term_end();
     term_log_begin();
-    term_print("> out_regs.bmp180_pressure = 0x");
-    term_hex(out_regs.bmp180_pressure, 8);
-    term_print("  p=");
-    term_decimal(out_regs.bmp180_pressure, 6, 2);
-    term_print("hPa");
+    term_print("> out_regs.humidity (Si7021) = ");
+    term_int(out_regs[SI7021_INDEX + 1], 5);
     term_end();
 #endif
-#else
-    out_regs.bmp180_temperature = 0xffff;
-    out_regs.bmp180_pressure = 0xffffffff;
 #endif
 }
 
-void data_collector_reed() {
-#if REED_EN
+void data_collector_digital_in() {
+#if DIGITAL_IN_INDEX
     p_reed_pullup();
     p_delay_us(10);
     if (p_reed_val()) {
         // open, H
-        out_regs.reed = REED_H_VALUE;
+        out_regs[DIGITAL_IN_INDEX] = 0;
     } else {
         // close, L
-        out_regs.reed = REED_L_VALUE;
+        out_regs[DIGITAL_IN_INDEX] = 1;
     }
     p_reed_pulldown();
 #if TERM_ENABLE
     term_log_begin();
-    term_print("> out_regs.reed = 0x");
-    term_hex(out_regs.reed, 2);
+    term_print("> out_regs.digital_in = ");
+    term_int(out_regs[DIGITAL_IN_INDEX], 2);
     term_end();
 #endif
-#else
-    out_regs.reed = 0xff;
 #endif
 }
+

@@ -15,12 +15,11 @@
 #include "term.h"
 #include "sensor.h"
 
-out_regs_t out_regs;
+int16_t out_regs[16];
 in_regs_t in_regs;
 
 static uint8_t data_transmission();
 static void display_in_regs();
-static uint8_t is_my_led_disabled();
 
 void sensor_mainloop() {
     uint8_t allowed_retries = MAX_RETRIES;
@@ -34,7 +33,7 @@ void sensor_mainloop() {
                 break;
             }
 
-            out_regs.retries++;
+            out_regs[OUT_REGS_RETRIES_INDEX]++;
             isr_delay_ms(RETRY_DELAY);
         }
 
@@ -51,15 +50,13 @@ void sensor_mainloop() {
 
         if (retries < allowed_retries) {
             // success
-            out_regs.retries = 0;
+            out_regs[OUT_REGS_RETRIES_INDEX] = 0;
             if (allowed_retries < MAX_RETRIES)
                 allowed_retries++;
 
-            if (!is_my_led_disabled()) {
-                p_led_h();
-                isr_delay_ms(10);
-                p_led_l();
-            }
+            p_led_h();
+            isr_delay_ms(10);
+            p_led_l();
 
             display_in_regs();
 
@@ -87,7 +84,7 @@ static uint8_t data_transmission() {
     spirit_rx_set_addr(MY_ADDRESS);
 
 
-    spirit_tx_data(sizeof(out_regs_t), (uint8_t*) &out_regs);
+    spirit_tx_data(OUT_PAYLOAD_LEN * 2, (uint8_t*) out_regs);
     uint8_t result = spirit_tx_wait_on_finished(10);
     if (!result)
         return 0;
@@ -108,27 +105,8 @@ static uint8_t data_transmission() {
 static void display_in_regs() {
 #if TERM_ENABLE
     term_log_begin();
-    term_print("< in_regs.led_en = ");
-    for (uint8_t i = 0; i < sizeof(in_regs.led_dis); i++) {
-        term_hex(in_regs.led_dis[i], 2);
-        term_putchar(' ');
-    }
-    term_end();
-
-    term_log_begin();
     term_print("< in_regs.testing = ");
     term_hex(in_regs.testing, 2);
     term_end();
-
-    term_log_begin();
-    term_print("< in_regs.status_led = ");
-    term_hex(in_regs.status_led, 2);
-    term_end();
 #endif
-}
-
-static uint8_t is_my_led_disabled() {
-    uint8_t index = MY_ADDRESS << 3; // divide by 8
-    uint8_t bit = MY_ADDRESS & 7; // rest modulo 8
-    return in_regs.led_dis[index] & (1 << bit);
 }

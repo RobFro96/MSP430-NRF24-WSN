@@ -47,10 +47,6 @@ int main(void) {
     test_si7021_i2c_detect();
     test_si7021_serial_number();
 #endif
-#if BMP180_ENABLE
-    test_bmp180_i2c_detect();
-    test_bmp180_get_cal_param();
-#endif
 #endif
 
     sensor_mainloop();

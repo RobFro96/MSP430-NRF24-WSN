@@ -56,9 +56,9 @@
 // SPIRIT1 Package Settings
 #define SPIRIT_PCK_CHNUM 0 // 0...255: Channel Number
 #define SPIRIT_PCK_CRC_MODE 1 // 0: No CRC, 1: 0x07, 2: 0x8005, 3: 0x1021, 4: 0x864CBF
-#define SPIRIT_PCK_WHIT_EN 0 // 1: Enable Data Whitening
+#define SPIRIT_PCK_WHIT_EN 1 // 1: Enable Data Whitening
 #define SPIRIT_PCK_SYNC_LEN 3 // 0...3: -> 1...4 Sync Bytes
-#define SPIRIT_PCK_PREAMBLE_LEN 7 // 0...31 -> 1...32 Preamble Length
+#define SPIRIT_PCK_PREAMBLE_LEN 3 // 0...31 -> 1...32 Preamble Length
 #define SPIRIT_PCK_ADDR_LEN 1 // 1: Send Receiver Address
 #define SPIRIT_PCK_CTRL_LEN 4 // 0...4: Control Bytes
 #define SPIRIT_PCK_SYNC1 0x88 // Sync Bytes

@@ -11,4 +11,8 @@ extern uint8_t uart_rx_buffer[];
 
 void uart_init();
 void uart_send(uint8_t c);
+void uart_print(char *str);
+void uart_send_hex16(int16_t number);
+void uart_convert_buffer_to_int16(int16_t *out);
+
 #endif /* UART_H_ */
