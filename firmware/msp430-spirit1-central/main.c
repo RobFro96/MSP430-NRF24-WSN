@@ -47,7 +47,6 @@ int main(void) {
     spirit_rx_set_addr(MY_ADDRESS);
     spirit_rx_start();
 
-    in_regs[0] = 1;
     uart_send('\n');
     uart_send('\n');
     uart_send('\n');

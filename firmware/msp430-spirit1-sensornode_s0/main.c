@@ -1,0 +1,48 @@
+/**
+ * MSP430 and NRF24L01 based WSN
+ * @file config.h
+ * @author Robert Fromm
+ * @date 06.02.2022
+ */
+
+#include <msp430.h>
+#include <stdint.h>
+
+#include "config.h"
+#include "pins.h"
+#include "spia.h"
+#include "i2c.h"
+#include "term.h"
+#include "isr.h"
+#include "spirit.h"
+#include "test_spirit.h"
+#include "si7021.h"
+#include "test_si7021.h"
+#include "sensor.h"
+
+int main(void) {
+	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
+	p_setup();
+	
+	spia_init();
+	__enable_interrupt();
+	term_wait_and_clear();
+
+	// SPIRIT1 initialization
+	spirit_reset();
+    spirit_profile_apply(spirit_profile_basic_868mhz);
+    spirit_profile_apply(spirit_profile_fsk_38k4);
+    spirit_profile_apply(spirit_profile_pck);
+	spirit_do_calibration();
+	term_log("SPRIT1 initialized.");
+
+	// Tests
+#if TERM_ENABLE
+	test_spirit_read_burst();
+	test_spirit_irq_toggle();
+	test_spirit_sleep_wakeup();
+#endif
+
+    sensor_mainloop();
+}
+
