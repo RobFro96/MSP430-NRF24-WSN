@@ -27,6 +27,7 @@ void data_collector() {
     data_collector_temperature_internal();
     data_collector_si7021_data();
     data_collector_digital_in();
+    data_collector_resistor_div();
 }
 
 void data_collector_rf_values() {
@@ -98,20 +99,56 @@ void data_collector_si7021_data() {
 
 void data_collector_digital_in() {
 #if DIGITAL_IN_INDEX
-    p_reed_pullup();
+    p_1_3_pullup();
     p_delay_us(10);
-    if (p_reed_val()) {
+    if (p_1_3_val()) {
         // open, H
         out_regs[DIGITAL_IN_INDEX] = 0;
     } else {
         // close, L
         out_regs[DIGITAL_IN_INDEX] = 1;
     }
-    p_reed_pulldown();
+    p_1_3_pulldown();
 #if TERM_ENABLE
     term_log_begin();
     term_print("> out_regs.digital_in = ");
     term_int(out_regs[DIGITAL_IN_INDEX], 2);
+    term_end();
+#endif
+#endif
+}
+
+void data_collector_resistor_div() {
+#if RESISTOR_DIV_INDEX
+    p_1_5_h();
+    p_1_3_pullno();
+    ADC10AE0 |= BIT3;
+    p_delay_us(100);
+
+    ADC10CTL1 = INCH_3 + ADC10DIV_3;
+    ADC10CTL0 = ADC10SHT_3 + ADC10ON;
+    p_delay_us(30);
+    ADC10CTL0 |= ENC + ADC10SC;
+
+    while (ADC10CTL1 & BUSY) {
+    }
+
+    uint16_t adc_result = ADC10MEM;
+    ADC10CTL0 &= ~(ENC);
+    ADC10CTL0 &= ~(ADC10ON);
+
+    p_1_5_l();
+
+    if (adc_result < 993) {
+        out_regs[RESISTOR_DIV_INDEX] = (1000L * adc_result) / (1024 - adc_result);
+    } else {
+        out_regs[RESISTOR_DIV_INDEX] = (1000L * 993) / (1024 - 993);
+    }
+
+#if TERM_ENABLE
+    term_log_begin();
+    term_print("> out_regs.resistor_div = ");
+    term_int(out_regs[RESISTOR_DIV_INDEX], 4);
     term_end();
 #endif
 #endif

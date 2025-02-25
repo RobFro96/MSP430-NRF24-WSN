@@ -12,7 +12,7 @@
 
 #define CONTROL_WORD "RoFr"
 #define CONTROL_MASK {0xFF, 0xFF, 0xFF, 0xFF}
-#define MY_ADDRESS 1
+#define MY_ADDRESS 4
 
 #if MY_ADDRESS == 1
 // [1] Testing
@@ -28,10 +28,19 @@
 #define TERM_ENABLE 0
 #define INTERNAL_TEMPERATURE_INDEX 0 // 3
 #define SI7021_INDEX 3 // 3+4
-#define DIGITAL_IN_INDEX 5 // 5
+#define DIGITAL_IN_INDEX 0 // 5
 #define SLEEP_DEFAULT (120) // sec
 #define OUT_PAYLOAD_LEN (5) // Number of words
 
+#elif MY_ADDRESS == 4
+// [4] Blume
+#define TERM_ENABLE 0
+#define INTERNAL_TEMPERATURE_INDEX 0 // 3
+#define SI7021_INDEX 3 // 3+4
+#define DIGITAL_IN_INDEX 0 // 5
+#define RESISTOR_DIV_INDEX 5 // 5
+#define SLEEP_DEFAULT (120) // sec
+#define OUT_PAYLOAD_LEN (6) // Number of words
 #endif
 
 #define P_CLOCK_FREQ_MHZ 1  // DCO Calibration: frequency of MCLK/SMCLK
